@@ -89,16 +89,15 @@
     onParallax();
   }
 
-  // Video-synced color themes and thunder effect (every 5.3 seconds)
+  // Thunder effect: 40 seconds on, 3 minutes off, repeat
   const thunderOverlay = document.querySelector('.thunder-overlay');
   const themes = ['', 'theme-amber', 'theme-steel', 'theme-copper', 'theme-cyan'];
   let themeIndex = 0;
-  const THEME_INTERVAL_MS = 5100;
-  const SCROLL_PAUSE_MS = 30000;
-  const SCROLL_THRESHOLD_PX = 100;
+  const THUNDER_INTERVAL_MS = 5100;
+  const THUNDER_ACTIVE_MS = 40000;
+  const THUNDER_PAUSE_MS = 180000;
   let themeIntervalId = null;
-  let scrollPauseTimeoutId = null;
-  let lastScrollY = window.scrollY;
+  let scheduleTimeoutId = null;
 
   function triggerThunder() {
     if (thunderOverlay) {
@@ -120,34 +119,17 @@
     triggerThunder();
   }
 
-  function startThemeInterval() {
-    if (themeIntervalId) return;
-    themeIntervalId = setInterval(cycleTheme, THEME_INTERVAL_MS);
-  }
-
-  function stopThemeInterval() {
-    if (themeIntervalId) {
+  function startThunderPhase() {
+    cycleTheme();
+    themeIntervalId = setInterval(cycleTheme, THUNDER_INTERVAL_MS);
+    scheduleTimeoutId = setTimeout(() => {
       clearInterval(themeIntervalId);
       themeIntervalId = null;
-    }
+      scheduleTimeoutId = setTimeout(startThunderPhase, THUNDER_PAUSE_MS);
+    }, THUNDER_ACTIVE_MS);
   }
 
-  function onScrollForThunder() {
-    const currentScroll = window.scrollY;
-    if (currentScroll > lastScrollY && (currentScroll - lastScrollY) >= SCROLL_THRESHOLD_PX) {
-      stopThemeInterval();
-      if (scrollPauseTimeoutId) clearTimeout(scrollPauseTimeoutId);
-      scrollPauseTimeoutId = setTimeout(() => {
-        scrollPauseTimeoutId = null;
-        startThemeInterval();
-      }, SCROLL_PAUSE_MS);
-    }
-    lastScrollY = currentScroll;
-  }
-
-  window.addEventListener('scroll', onScrollForThunder, { passive: true });
-  startThemeInterval();
-  setTimeout(cycleTheme, 800);
+  setTimeout(startThunderPhase, 800);
 
   // Smooth anchor scroll
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
