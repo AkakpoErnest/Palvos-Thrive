@@ -89,15 +89,13 @@
     onParallax();
   }
 
-  // Thunder effect: 40 seconds on, 3 minutes off, repeat
+  // Thunder effect: 5.2s interval for first 30s, then 70s interval after
   const thunderOverlay = document.querySelector('.thunder-overlay');
   const themes = ['', 'theme-amber', 'theme-steel', 'theme-copper', 'theme-cyan'];
   let themeIndex = 0;
-  const THUNDER_INTERVAL_MS = 5100;
-  const THUNDER_ACTIVE_MS = 40000;
-  const THUNDER_PAUSE_MS = 180000;
-  let themeIntervalId = null;
-  let scheduleTimeoutId = null;
+  const THUNDER_INTERVAL_EARLY_MS = 5200;   // 5.2 seconds for first 30s
+  const THUNDER_INTERVAL_LATE_MS = 70000;   // 70 seconds after 30s
+  const SWITCH_AFTER_MS = 30000;            // 30 seconds
 
   function triggerThunder() {
     if (thunderOverlay) {
@@ -119,17 +117,22 @@
     triggerThunder();
   }
 
-  function startThunderPhase() {
-    cycleTheme();
-    themeIntervalId = setInterval(cycleTheme, THUNDER_INTERVAL_MS);
-    scheduleTimeoutId = setTimeout(() => {
-      clearInterval(themeIntervalId);
-      themeIntervalId = null;
-      scheduleTimeoutId = setTimeout(startThunderPhase, THUNDER_PAUSE_MS);
-    }, THUNDER_ACTIVE_MS);
+  let thunderIntervalId = null;
+
+  function startEarlyInterval() {
+    thunderIntervalId = setInterval(cycleTheme, THUNDER_INTERVAL_EARLY_MS);
   }
 
-  setTimeout(startThunderPhase, 800);
+  function startLateInterval() {
+    if (thunderIntervalId) clearInterval(thunderIntervalId);
+    thunderIntervalId = setInterval(cycleTheme, THUNDER_INTERVAL_LATE_MS);
+  }
+
+  setTimeout(cycleTheme, 800);
+  startEarlyInterval();
+  setTimeout(() => {
+    startLateInterval();
+  }, SWITCH_AFTER_MS);
 
   // Smooth anchor scroll
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
