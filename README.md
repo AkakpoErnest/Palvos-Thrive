@@ -7,7 +7,7 @@
 
 ---
 
-### <img src="https://cdn.simpleicons.org/globe/6366F1" width="18" height="18" /> **[Check out my full portfolio → ernestakakpo.com](https://ernestakakpo.com)**
+### **[Check out my full portfolio → ernestakakpo.com](https://ernestakakpo.com)**
 
 *Articles, talks, experience & more, all in one place*
 
@@ -28,10 +28,10 @@
 
 ## What I Do
 
-- <img src="https://cdn.simpleicons.org/users/6366F1" width="16" height="16" /> **Community Building** - Leading ecosystem growth across Africa; building developer and student communities
-- <img src="https://cdn.simpleicons.org/megaphone/6366F1" width="16" height="16" /> **Developer Advocacy** - Teaching blockchain & Web3 fundamentals, facilitating programs, mentoring builders
-- <img src="https://cdn.simpleicons.org/chartdotjs/6366F1" width="16" height="16" /> **Research & Thought Leadership** - Protocol research, governance analysis, simplifying complex technical concepts
-- <img src="https://cdn.simpleicons.org/pencil/6366F1" width="16" height="16" /> **Technical Writing** - Publishing articles on stablecoins, Web3 adoption, and inclusive tech ecosystems
+- **Community Building** - Leading ecosystem growth across Africa; building developer and student communities
+- **Developer Advocacy** - Teaching blockchain & Web3 fundamentals, facilitating programs, mentoring builders
+- **Research & Thought Leadership** - Protocol research, governance analysis, simplifying complex technical concepts
+- **Technical Writing** - Publishing articles on stablecoins, Web3 adoption, and inclusive tech ecosystems
 
 ---
 
@@ -71,5 +71,10 @@
 [![Talks](https://img.shields.io/badge/Talks_%26_Engagements-View_All-6366F1?style=for-the-badge)](https://ernestakakpo.com/talks)
 
 **Open to opportunities** in ecosystem growth, developer advocacy, community management, and speaking.
+
+---
+
+> *"No matter how hard or how impossible it is, never lose sight of your goal."*  
+> — Monkey D. Luffy, One Piece
 
 </div>
