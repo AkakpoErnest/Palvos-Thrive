@@ -89,6 +89,61 @@
     onParallax();
   }
 
+  // Video-synced color themes and thunder effect (every 5.3 seconds)
+  const thunderOverlay = document.querySelector('.thunder-overlay');
+  const themes = ['', 'theme-amber', 'theme-steel', 'theme-copper', 'theme-cyan'];
+  let themeIndex = 0;
+  const THEME_INTERVAL_MS = 5300;
+  const SCROLL_PAUSE_MS = 30000;
+  let themeIntervalId = null;
+  let scrollPauseTimeoutId = null;
+  let lastScrollY = window.scrollY;
+
+  function triggerThunder() {
+    if (thunderOverlay) {
+      thunderOverlay.classList.remove('flash');
+      void thunderOverlay.offsetWidth;
+      thunderOverlay.classList.add('flash');
+      setTimeout(() => thunderOverlay.classList.remove('flash'), 500);
+    }
+  }
+
+  function cycleTheme() {
+    document.body.classList.remove(...themes.filter(Boolean));
+    themeIndex = (themeIndex + 1) % themes.length;
+    if (themes[themeIndex]) {
+      document.body.classList.add(themes[themeIndex]);
+    }
+    triggerThunder();
+  }
+
+  function startThemeInterval() {
+    if (themeIntervalId) return;
+    themeIntervalId = setInterval(cycleTheme, THEME_INTERVAL_MS);
+  }
+
+  function stopThemeInterval() {
+    if (themeIntervalId) {
+      clearInterval(themeIntervalId);
+      themeIntervalId = null;
+    }
+  }
+
+  function onScrollForThunder() {
+    if (window.scrollY > lastScrollY) {
+      stopThemeInterval();
+      if (scrollPauseTimeoutId) clearTimeout(scrollPauseTimeoutId);
+      scrollPauseTimeoutId = setTimeout(() => {
+        scrollPauseTimeoutId = null;
+        startThemeInterval();
+      }, SCROLL_PAUSE_MS);
+    }
+    lastScrollY = window.scrollY;
+  }
+
+  window.addEventListener('scroll', onScrollForThunder, { passive: true });
+  startThemeInterval();
+
   // Smooth anchor scroll
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     anchor.addEventListener('click', function (e) {
