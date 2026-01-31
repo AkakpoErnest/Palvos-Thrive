@@ -93,8 +93,9 @@
   const thunderOverlay = document.querySelector('.thunder-overlay');
   const themes = ['', 'theme-amber', 'theme-steel', 'theme-copper', 'theme-cyan'];
   let themeIndex = 0;
-  const THEME_INTERVAL_MS = 5300;
+  const THEME_INTERVAL_MS = 5100;
   const SCROLL_PAUSE_MS = 30000;
+  const SCROLL_THRESHOLD_PX = 100;
   let themeIntervalId = null;
   let scrollPauseTimeoutId = null;
   let lastScrollY = window.scrollY;
@@ -102,10 +103,12 @@
   function triggerThunder() {
     if (thunderOverlay) {
       thunderOverlay.classList.remove('flash');
-      void thunderOverlay.offsetWidth;
+      thunderOverlay.offsetHeight;
       thunderOverlay.classList.add('flash');
-      setTimeout(() => thunderOverlay.classList.remove('flash'), 500);
+      setTimeout(() => thunderOverlay.classList.remove('flash'), 450);
     }
+    document.body.classList.add('thunder-impact');
+    setTimeout(() => document.body.classList.remove('thunder-impact'), 350);
   }
 
   function cycleTheme() {
@@ -130,7 +133,8 @@
   }
 
   function onScrollForThunder() {
-    if (window.scrollY > lastScrollY) {
+    const currentScroll = window.scrollY;
+    if (currentScroll > lastScrollY && (currentScroll - lastScrollY) >= SCROLL_THRESHOLD_PX) {
       stopThemeInterval();
       if (scrollPauseTimeoutId) clearTimeout(scrollPauseTimeoutId);
       scrollPauseTimeoutId = setTimeout(() => {
@@ -138,11 +142,12 @@
         startThemeInterval();
       }, SCROLL_PAUSE_MS);
     }
-    lastScrollY = window.scrollY;
+    lastScrollY = currentScroll;
   }
 
   window.addEventListener('scroll', onScrollForThunder, { passive: true });
   startThemeInterval();
+  setTimeout(cycleTheme, 800);
 
   // Smooth anchor scroll
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
