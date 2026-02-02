@@ -16,46 +16,68 @@
   const menuToggle = document.querySelector('.menu-toggle');
   const nav = document.querySelector('.nav');
   if (menuToggle && nav) {
-    menuToggle.addEventListener('click', () => {
+    const closeMenu = () => {
+      nav.classList.remove('open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    };
+    menuToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
       const open = nav.classList.toggle('open');
       menuToggle.setAttribute('aria-expanded', open);
       document.body.style.overflow = open ? 'hidden' : '';
     });
     nav.querySelectorAll('a').forEach((a) => {
-      a.addEventListener('click', () => {
-        nav.classList.remove('open');
-        menuToggle.setAttribute('aria-expanded', 'false');
-        document.body.style.overflow = '';
-      });
+      a.addEventListener('click', closeMenu);
+    });
+    document.addEventListener('click', (e) => {
+      if (nav.classList.contains('open') && !nav.contains(e.target) && !menuToggle.contains(e.target)) {
+        closeMenu();
+      }
     });
   }
 
-  // Scroll reveal
+  // Scroll reveal - mobile uses earlier trigger (smaller rootMargin) for better sync with viewport
   const revealEls = document.querySelectorAll('.reveal');
-  const revealOptions = { rootMargin: '0px 0px -80px 0px', threshold: 0.1 };
+  const isMobileView = () => window.matchMedia('(max-width: 768px)').matches;
+  const getRevealRootMargin = () => isMobileView() ? '0px 0px -40px 0px' : '0px 0px -80px 0px';
 
-  const revealObserver = new IntersectionObserver((entries) => {
+  let revealObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         entry.target.classList.add('revealed');
       }
     });
-  }, revealOptions);
+  }, { rootMargin: getRevealRootMargin(), threshold: 0.1 });
 
   revealEls.forEach((el) => revealObserver.observe(el));
 
-  // Stagger children in grids (optional)
+  // Recreate reveal observer on resize (mobile/desktop switch)
+  window.addEventListener('resize', () => {
+    revealObserver.disconnect();
+    revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+        }
+      });
+    }, { rootMargin: getRevealRootMargin(), threshold: 0.1 });
+    revealEls.forEach((el) => revealObserver.observe(el));
+  });
+
+  // Stagger children in grids - shorter delay on mobile for snappier feel
   const staggerContainers = document.querySelectorAll('.ikigai-grid, .services-grid, .portfolio-grid');
-  staggerContainers.forEach((container, ci) => {
-    const children = container.querySelectorAll('.reveal');
-    children.forEach((child, i) => {
-      child.style.transitionDelay = `${i * 0.08}s`;
+  const getStaggerDelay = (i) => (window.matchMedia('(max-width: 768px)').matches ? i * 0.04 : i * 0.08);
+  staggerContainers.forEach((container) => {
+    container.querySelectorAll('.reveal').forEach((child, i) => {
+      child.style.transitionDelay = `${getStaggerDelay(i)}s`;
     });
   });
 
   // Hero video: show when loaded, fallback only on error
   const heroVideo = document.querySelector('.hero-video');
   const heroFallback = document.querySelector('.hero-video-fallback');
+  const heroSection = document.querySelector('.hero');
   if (heroVideo && heroFallback) {
     heroVideo.style.opacity = '1';
     heroVideo.addEventListener('canplay', () => {
@@ -71,17 +93,31 @@
     }
   }
 
-  // Hero video parallax: video moves slower than foreground on scroll
+  // On mobile: play video only when hero is visible, pause when scrolled away (saves battery, keeps sync)
+  const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
+  if (heroVideo && heroSection) {
+    const heroObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!isMobile()) return;
+        if (entry.isIntersecting) {
+          heroVideo.play().catch(() => {});
+        } else {
+          heroVideo.pause();
+        }
+      });
+    }, { threshold: 0.25 });
+    heroObserver.observe(heroSection);
+  }
+
+  // Hero video parallax: video moves slower than foreground on scroll (reduced on mobile for performance)
   const heroVideoWrap = document.querySelector('.hero-video-wrap');
-  const heroSection = document.querySelector('.hero');
   if (heroVideoWrap && heroSection) {
-    const parallaxSpeed = 0.35;
     const onParallax = () => {
       const rect = heroSection.getBoundingClientRect();
-      const heroHeight = heroSection.offsetHeight;
       if (rect.bottom > 0 && rect.top < window.innerHeight) {
         const scrollProgress = -rect.top;
-        const translateY = scrollProgress * parallaxSpeed;
+        const speed = isMobile() ? 0.1 : 0.35;
+        const translateY = scrollProgress * speed;
         heroVideoWrap.style.transform = `translate3d(0, ${translateY}px, 0)`;
       }
     };
@@ -89,13 +125,13 @@
     onParallax();
   }
 
-  // Thunder effect: 5.2s interval for first 30s, then 70s interval after
+  // Thunder effect: synced with video playback on mobile, interval-based on desktop
   const thunderOverlay = document.querySelector('.thunder-overlay');
   const themes = ['', 'theme-amber', 'theme-steel', 'theme-copper', 'theme-cyan'];
   let themeIndex = 0;
-  const THUNDER_INTERVAL_EARLY_MS = 5200;   // 5.2 seconds for first 30s
-  const THUNDER_INTERVAL_LATE_MS = 70000;   // 70 seconds after 30s
-  const SWITCH_AFTER_MS = 30000;            // 30 seconds
+  const THUNDER_INTERVAL_EARLY_MS = 5200;
+  const THUNDER_INTERVAL_LATE_MS = 70000;
+  const SWITCH_AFTER_MS = 30000;
 
   function triggerThunder() {
     if (thunderOverlay) {
@@ -119,20 +155,44 @@
 
   let thunderIntervalId = null;
 
-  function startEarlyInterval() {
-    thunderIntervalId = setInterval(cycleTheme, THUNDER_INTERVAL_EARLY_MS);
-  }
+  if (heroVideo && isMobile()) {
+    // Mobile: sync thunder with video playback - fire at 5.2s intervals for first 30s, then 70s
+    let lastThunderTime = -1;
+    const earlyInterval = 5.2;
+    const lateInterval = 70;
+    const earlyPhaseEnd = 30;
 
-  function startLateInterval() {
-    if (thunderIntervalId) clearInterval(thunderIntervalId);
-    thunderIntervalId = setInterval(cycleTheme, THUNDER_INTERVAL_LATE_MS);
+    heroVideo.addEventListener('timeupdate', () => {
+      if (!heroVideo.duration || heroVideo.paused) return;
+      const t = heroVideo.currentTime;
+      if (t < lastThunderTime) lastThunderTime = -1; // Video looped
+      const interval = lastThunderTime < earlyPhaseEnd ? earlyInterval : lateInterval;
+      const expectedStrike = lastThunderTime < 0 ? 0 : lastThunderTime + interval;
+      if (t >= expectedStrike - 0.35) {
+        lastThunderTime = t;
+        cycleTheme();
+      }
+    });
+    // First thunder when video starts
+    heroVideo.addEventListener('playing', () => {
+      if (lastThunderTime < 0) {
+        cycleTheme();
+        lastThunderTime = 0;
+      }
+    });
+  } else {
+    // Desktop: interval-based
+    function startEarlyInterval() {
+      thunderIntervalId = setInterval(cycleTheme, THUNDER_INTERVAL_EARLY_MS);
+    }
+    function startLateInterval() {
+      if (thunderIntervalId) clearInterval(thunderIntervalId);
+      thunderIntervalId = setInterval(cycleTheme, THUNDER_INTERVAL_LATE_MS);
+    }
+    setTimeout(() => cycleTheme(), 800);
+    startEarlyInterval();
+    setTimeout(() => startLateInterval(), SWITCH_AFTER_MS);
   }
-
-  setTimeout(cycleTheme, 800);
-  startEarlyInterval();
-  setTimeout(() => {
-    startLateInterval();
-  }, SWITCH_AFTER_MS);
 
   // Smooth anchor scroll
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
