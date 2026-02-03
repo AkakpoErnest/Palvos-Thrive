@@ -56,9 +56,6 @@
       <a href="#ikigai">Process</a>
       <a href="#services">Services</a>
       <a href="#portfolio">Work</a>
-      <button type="button" class="effects-toggle" id="effects-toggle" aria-label="Toggle effects (thunder, parallax)" aria-pressed="true" title="Effects on/off">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-      </button>
       <a href="#contact" class="nav-cta">Let's Talk</a>
     </nav>
     <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
@@ -71,11 +68,10 @@
   <main>
     <section class="hero" id="hero">
       <div class="hero-video-wrap">
-        <!-- H.264 mp4 + webm for broad compatibility. Convert with: ffmpeg -i 0131(1).mov -c:v libx264 -movflags +faststart video/hero-bg.mp4 -->
-        <video class="hero-video" autoplay muted loop playsinline poster="Gemini_Generated_Image_201uj9201uj9201u%20(1).png">
+        <!-- For best support: add video/hero-bg.mp4 (e.g. ffmpeg -i video/qwer.mov -c:v libx264 -movflags +faststart video/hero-bg.mp4). Safari may play qwer.mov directly. -->
+        <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="Gemini_Generated_Image_201uj9201uj9201u%20(1).png">
           <source src="video/hero-bg.mp4" type="video/mp4">
-          <source src="video/hero-bg.webm" type="video/webm">
-          <source src="0131(1).mov" type="video/quicktime">
+          <source src="video/qwer.mov" type="video/quicktime">
         </video>
         <div class="hero-video-fallback"></div>
         <div class="hero-gradient"></div>

@@ -24,6 +24,16 @@ python3 -m http.server 8888
 # Then open http://localhost:8888
 ```
 
+## Hero background video
+
+The hero uses `video/hero-bg.mp4` when present; otherwise it falls back to the poster image. To generate the MP4 from your source video (e.g. `video/qwer.mov`), install [ffmpeg](https://ffmpeg.org/) then run:
+
+```bash
+ffmpeg -i video/qwer.mov -c:v libx264 -movflags +faststart video/hero-bg.mp4
+```
+
+Reload the site after creating `video/hero-bg.mp4` to see the background video in all major browsers.
+
 ## Tech
 
 - HTML5

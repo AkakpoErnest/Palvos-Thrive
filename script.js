@@ -145,17 +145,6 @@
   // Initialize effects state
   document.body.classList.toggle('effects-off', !getEffectsEnabled());
 
-  // Effects toggle button
-  const effectsToggle = document.getElementById('effects-toggle');
-  if (effectsToggle) {
-    effectsToggle.setAttribute('aria-pressed', String(getEffectsEnabled()));
-    effectsToggle.addEventListener('click', () => {
-      const next = !getEffectsEnabled();
-      setEffectsEnabled(next);
-      effectsToggle.setAttribute('aria-pressed', String(next));
-    });
-  }
-
   // Header scroll state
   const header = document.querySelector('.header');
   if (header) {
@@ -385,28 +374,58 @@
     }
   }
 
-  // Hero video: show when loaded, robust fallback on error (poster + gradient stay visible)
+  // Hero video: show poster immediately; replace with video when it plays
   const heroVideo = document.querySelector('.hero-video');
   const heroFallback = document.querySelector('.hero-video-fallback');
   const heroSection = document.querySelector('.hero');
   if (heroVideo && heroFallback) {
-    heroVideo.style.opacity = '1';
-    heroVideo.addEventListener('canplay', () => {
+    var wrap = heroVideo.closest('.hero-video-wrap');
+    function showFallback() {
+      heroVideo.style.opacity = '0';
+      var posterUrl = heroVideo.poster || heroVideo.getAttribute('poster');
+      if (posterUrl) {
+        heroFallback.style.background = 'none';
+        heroFallback.style.backgroundImage = 'url(' + posterUrl + ')';
+        heroFallback.style.backgroundSize = 'cover';
+        heroFallback.style.backgroundPosition = 'center';
+      }
+      if (wrap) wrap.classList.add('hero-video-unavailable');
+      heroFallback.style.transition = 'opacity 0.6s ease';
+      heroFallback.style.opacity = '1';
+    }
+    function showVideo() {
+      heroFallback.style.opacity = '0';
       heroVideo.style.transition = 'opacity 0.8s ease';
       heroVideo.style.opacity = '1';
-      heroFallback.style.opacity = '0';
       heroVideo.play().catch(() => {});
-    });
-    heroVideo.addEventListener('error', () => {
-      heroVideo.style.display = 'none';
-      heroFallback.style.opacity = '1';
-      heroFallback.style.transition = 'opacity 0.6s ease';
-    });
-    if (heroVideo.readyState >= 2) {
-      heroVideo.play().catch(() => {});
-    } else {
-      heroVideo.load();
     }
+    // Show poster immediately so something is visible while video loads
+    heroVideo.style.opacity = '0';
+    var posterUrl = heroVideo.poster || heroVideo.getAttribute('poster');
+    if (posterUrl) {
+      heroFallback.style.background = 'none';
+      heroFallback.style.backgroundImage = 'url(' + posterUrl + ')';
+      heroFallback.style.backgroundSize = 'cover';
+      heroFallback.style.backgroundPosition = 'center';
+    }
+    if (wrap) wrap.classList.add('hero-video-unavailable');
+    heroFallback.style.opacity = '1';
+    heroVideo.addEventListener('canplay', () => {
+      showVideo();
+      if (wrap) wrap.classList.remove('hero-video-unavailable');
+      clearTimeout(heroVideo._fallbackTimer);
+    }, { once: true });
+    heroVideo.addEventListener('error', () => {
+      clearTimeout(heroVideo._fallbackTimer);
+    });
+    heroVideo._fallbackTimer = setTimeout(() => {
+      if (heroVideo.readyState >= 2) {
+        showVideo();
+        if (wrap) wrap.classList.remove('hero-video-unavailable');
+      }
+    }, 500);
+    heroVideo.load();
+    heroVideo.play().catch(() => {});
   }
 
   // On mobile: play video only when hero is visible, pause when scrolled away (saves battery, keeps sync)
