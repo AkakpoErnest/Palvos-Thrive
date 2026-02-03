@@ -5,13 +5,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="description" content="Palvos Thrive designs company and personal websites with SEO, performance, and brand storytelling. Ikigai-driven web design.">
   <title>Palvos Thrive | Digital Brand & Web Design</title>
+  <link rel="canonical" href="https://palvosthrive.com/">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Palvos Thrive | Digital Brand & Web Design">
+  <meta property="og:description" content="Websites that thrive. Ikigai-driven web design for companies and personal brands.">
+  <meta property="og:url" content="https://palvosthrive.com/">
+  <meta property="og:image" content="https://palvosthrive.com/Gemini_Generated_Image_201uj9201uj9201u%20(1).png">
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Palvos Thrive | Digital Brand & Web Design">
+  <meta name="twitter:description" content="Websites that thrive. Ikigai-driven web design for companies and personal brands.">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=5">
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" as="style">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=17">
+<!-- Intro overlay shows on every visit (no TTL skip) -->
 </head>
 <body>
+  <!-- Glass crack intro overlay: shows once per 30 days, dismiss via tap/click or keyboard -->
+  <div class="glass-intro" id="glass-intro" role="dialog" aria-modal="true" aria-label="Enter site" tabindex="0">
+    <div class="glass-intro-surface">
+      <div class="glass-intro-glare" aria-hidden="true"></div>
+      <div class="glass-intro-grain" aria-hidden="true"></div>
+      <svg class="glass-intro-crack" id="glass-intro-crack" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <!-- Crack paths injected by script from click position -->
+      </svg>
+      <div class="glass-intro-particles" id="glass-intro-particles" aria-hidden="true"></div>
+    </div>
+    <span class="glass-intro-hint">Click to enter</span>
+  </div>
+  <div class="glass-shatter" id="glass-shatter" aria-hidden="true">
+    <svg class="glass-shatter-crack" id="glass-shatter-crack" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      <!-- Shatter paths injected by script -->
+    </svg>
+    <div class="glass-shatter-shards" id="glass-shatter-shards" aria-hidden="true"></div>
+  </div>
+
   <div class="noise-overlay" aria-hidden="true"></div>
   <div class="thunder-overlay" aria-hidden="true"></div>
 
@@ -24,6 +56,9 @@
       <a href="#ikigai">Process</a>
       <a href="#services">Services</a>
       <a href="#portfolio">Work</a>
+      <button type="button" class="effects-toggle" id="effects-toggle" aria-label="Toggle effects (thunder, parallax)" aria-pressed="true" title="Effects on/off">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      </button>
       <a href="#contact" class="nav-cta">Let's Talk</a>
     </nav>
     <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
@@ -36,8 +71,11 @@
   <main>
     <section class="hero" id="hero">
       <div class="hero-video-wrap">
-        <video class="hero-video" autoplay muted loop playsinline poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 1080'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%230a0a0f'/%3E%3Cstop offset='100%25' style='stop-color:%231a1a2e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g)' width='1920' height='1080'/%3E%3C/svg%3E">
-          <source src="0131(1).mov" type="video/mp4">
+        <!-- H.264 mp4 + webm for broad compatibility. Convert with: ffmpeg -i 0131(1).mov -c:v libx264 -movflags +faststart video/hero-bg.mp4 -->
+        <video class="hero-video" autoplay muted loop playsinline poster="Gemini_Generated_Image_201uj9201uj9201u%20(1).png">
+          <source src="video/hero-bg.mp4" type="video/mp4">
+          <source src="video/hero-bg.webm" type="video/webm">
+          <source src="0131(1).mov" type="video/quicktime">
         </video>
         <div class="hero-video-fallback"></div>
         <div class="hero-gradient"></div>
@@ -54,7 +92,7 @@
         </h1>
         <p class="hero-desc stamp-in">We align what you love, what you're great at, what the world needs, and what you can be paid for. Every site we build starts with your Ikigai.</p>
         <div class="hero-actions stamp-in">
-          <a href="#contact" class="btn btn-primary">Start your project</a>
+          <a href="#contact" class="btn btn-primary" id="hero-cta">Start your project</a>
           <a href="#ikigai" class="btn btn-ghost">See our process</a>
         </div>
       </div>
@@ -160,35 +198,93 @@
           <span class="section-label">Services</span>
           <h2 class="section-title">What we create</h2>
         </div>
-        <div class="services-grid">
-          <article class="service-card reveal">
-            <div class="service-icon">
-              <img src="https://cdn.simpleicons.org/figma/00d4aa" alt="" width="32" height="32" aria-hidden="true">
+        <div class="services-scene" aria-hidden="false">
+          <div class="services-list" id="services-list">
+            <article class="service-line service-line-1 service-reveal reveal" tabindex="0" data-accent="rgba(0, 212, 170, 0.9)" data-speed="12">
+              <span class="service-index">01</span>
+              <div class="service-content">
+                <h3>Web design</h3>
+                <p>Company sites and web apps with modern UI, clean UX, and a clear path to conversion.</p>
+              </div>
+            </article>
+            <article class="service-line service-line-2 service-reveal reveal" tabindex="0" data-accent="rgba(109, 231, 255, 0.9)" data-speed="10">
+              <span class="service-index">02</span>
+              <div class="service-content">
+                <h3>Personal websites</h3>
+                <p>Portfolios, personal brands, and one-page sites that tell your story and attract opportunities.</p>
+              </div>
+            </article>
+            <article class="service-line service-line-3 service-reveal reveal" tabindex="0" data-accent="rgba(0, 212, 170, 0.75)" data-speed="14">
+              <span class="service-index">03</span>
+              <div class="service-content">
+                <h3>SEO & optimization</h3>
+                <p>Technical SEO, speed, and structure so your site ranks and performs at its best.</p>
+              </div>
+            </article>
+            <article class="service-line service-line-4 service-reveal reveal" tabindex="0" data-accent="rgba(124, 58, 237, 0.8)" data-speed="11">
+              <span class="service-index">04</span>
+              <div class="service-content">
+                <h3>Branding</h3>
+                <p>Visual identity and voice that carry through every page and touchpoint.</p>
+              </div>
+            </article>
+          </div>
+          <div class="services-engine" id="services-engine" aria-hidden="true">
+            <div class="engine-core">
+              <span class="engine-ring ring-1"></span>
+              <span class="engine-ring ring-2"></span>
+              <span class="engine-ring ring-3"></span>
+              <span class="engine-ring ring-4"></span>
+              <span class="engine-orbit"></span>
             </div>
-            <h3>Web design</h3>
-            <p>Company sites and web apps with modern UI, clean UX, and a clear path to conversion.</p>
-          </article>
-          <article class="service-card reveal">
-            <div class="service-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            </div>
-            <h3>Personal websites</h3>
-            <p>Portfolios, personal brands, and one-page sites that tell your story and attract opportunities.</p>
-          </article>
-          <article class="service-card reveal">
-            <div class="service-icon">
-              <img src="https://cdn.simpleicons.org/google/00d4aa" alt="" width="32" height="32" aria-hidden="true">
-            </div>
-            <h3>SEO & optimization</h3>
-            <p>Technical SEO, speed, and structure so your site ranks and performs at its best.</p>
-          </article>
-          <article class="service-card reveal">
-            <div class="service-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
-            </div>
-            <h3>Branding</h3>
-            <p>Visual identity and voice that carry through every page and touchpoint.</p>
-          </article>
+          </div>
+        </div>
+        <!-- Process in 3 steps -->
+        <div class="process-strip process-reveal reveal">
+          <div class="process-step">
+            <span class="process-num">1</span>
+            <h4>Discover</h4>
+            <p>We explore your Ikigai—what you love, what you're great at, what the world needs, and what you can be paid for.</p>
+          </div>
+          <div class="process-step">
+            <span class="process-num">2</span>
+            <h4>Design</h4>
+            <p>Strategy, wireframes, and visual design aligned to your brand and conversion goals.</p>
+          </div>
+          <div class="process-step">
+            <span class="process-num">3</span>
+            <h4>Deliver</h4>
+            <p>Build, optimize, and launch a site that performs and resonates with your audience.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section testimonials" id="testimonials">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-label">Testimonials</span>
+          <h2 class="section-title">What clients say</h2>
+        </div>
+        <div class="testimonials-grid">
+          <blockquote class="testimonial-card reveal">
+            <p>"Palvos Thrive understood our vision from day one. The site they built not only looks stunning but converts."</p>
+            <footer>
+              <span class="testimonial-name">— Startup Founder</span>
+            </footer>
+          </blockquote>
+          <blockquote class="testimonial-card reveal">
+            <p>"Professional, responsive, and they really get the Ikigai approach. Our new site feels authentically us."</p>
+            <footer>
+              <span class="testimonial-name">— Creative Director</span>
+            </footer>
+          </blockquote>
+          <blockquote class="testimonial-card reveal">
+            <p>"From branding to SEO, everything was handled with care. Couldn't recommend them more."</p>
+            <footer>
+              <span class="testimonial-name">— Solopreneur</span>
+            </footer>
+          </blockquote>
         </div>
       </div>
     </section>
@@ -200,39 +296,51 @@
           <h2 class="section-title">Selected projects</h2>
         </div>
         <div class="portfolio-grid">
-          <a href="https://ernestakakpo.com" target="_blank" rel="noopener noreferrer" class="portfolio-item reveal">
+          <article class="portfolio-item reveal" data-project="ernest" tabindex="0" role="button">
             <div class="portfolio-image">
-              <div class="portfolio-placeholder">
-                <span>Ernest Akakpo</span>
-              </div>
+              <img src="assets/work-1.png" alt="Ernest Akakpo — Brand & website" loading="lazy" width="600" height="375">
+              <span class="portfolio-view">View case study</span>
             </div>
             <div class="portfolio-info">
-              <span class="portfolio-cat">Web design</span>
-              <h3>Brand & website</h3>
+              <span class="portfolio-tags">
+                <span class="portfolio-tag">Web design</span>
+                <span class="portfolio-tag">Branding</span>
+              </span>
+              <h3>Ernest Akakpo</h3>
+              <p class="portfolio-role">Brand & website</p>
+              <a href="https://ernestakakpo.com" target="_blank" rel="noopener noreferrer" class="portfolio-link">Visit site →</a>
             </div>
-          </a>
-          <a href="https://paakow.vercel.app/" target="_blank" rel="noopener noreferrer" class="portfolio-item reveal">
+          </article>
+          <article class="portfolio-item reveal" data-project="paakow" tabindex="0" role="button">
             <div class="portfolio-image">
-              <div class="portfolio-placeholder">
-                <span>Paakow</span>
-              </div>
+              <img src="assets/work-2.png" alt="Paakow — Portfolio & storytelling" loading="lazy" width="600" height="375">
+              <span class="portfolio-view">View case study</span>
             </div>
             <div class="portfolio-info">
-              <span class="portfolio-cat">Personal site</span>
-              <h3>Portfolio & storytelling</h3>
+              <span class="portfolio-tags">
+                <span class="portfolio-tag">Personal site</span>
+                <span class="portfolio-tag">Portfolio</span>
+              </span>
+              <h3>Paakow</h3>
+              <p class="portfolio-role">Portfolio & storytelling</p>
+              <a href="https://paakow.vercel.app/" target="_blank" rel="noopener noreferrer" class="portfolio-link">Visit site →</a>
             </div>
-          </a>
-          <a href="https://akosua-osei.vercel.app/" target="_blank" rel="noopener noreferrer" class="portfolio-item reveal">
+          </article>
+          <article class="portfolio-item reveal" data-project="akosua" tabindex="0" role="button">
             <div class="portfolio-image">
-              <div class="portfolio-placeholder">
-                <span>Akosua Osei</span>
-              </div>
+              <img src="assets/work-3.png" alt="Akosua Osei — SEO & conversion" loading="lazy" width="600" height="375">
+              <span class="portfolio-view">View case study</span>
             </div>
             <div class="portfolio-info">
-              <span class="portfolio-cat">Full stack</span>
-              <h3>SEO & conversion</h3>
+              <span class="portfolio-tags">
+                <span class="portfolio-tag">Full stack</span>
+                <span class="portfolio-tag">SEO</span>
+              </span>
+              <h3>Akosua Osei</h3>
+              <p class="portfolio-role">SEO & conversion</p>
+              <a href="https://akosua-osei.vercel.app/" target="_blank" rel="noopener noreferrer" class="portfolio-link">Visit site →</a>
             </div>
-          </a>
+          </article>
         </div>
       </div>
     </section>
@@ -245,13 +353,41 @@
             <span class="section-label">Get in touch</span>
             <h2 class="cta-title">Ready to build a website that thrives?</h2>
             <p class="cta-desc">Tell us about your project. We'll align your Ikigai with strategy, design, and results.</p>
-            <a href="mailto:hello@palvosthrive.com" class="btn btn-primary btn-large">Start your project</a>
+            <div class="cta-actions">
+              <a href="mailto:hello@palvosthrive.com" class="btn btn-primary btn-large">Email us</a>
+              <a href="https://calendly.com" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-large">Schedule a call</a>
+            </div>
           </div>
         </div>
       </div>
     </section>
     </div>
   </main>
+
+  <!-- Portfolio case study modal (vanilla JS) -->
+  <div class="modal" id="portfolio-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-content">
+      <button type="button" class="modal-close" aria-label="Close modal" data-close-modal>×</button>
+      <div class="modal-body">
+        <span class="modal-label" id="modal-label">Case study</span>
+        <h2 class="modal-title" id="modal-title">Project title</h2>
+        <p class="modal-summary" id="modal-summary"></p>
+        <dl class="modal-meta">
+          <dt>Role</dt>
+          <dd id="modal-role"></dd>
+          <dt>Stack</dt>
+          <dd id="modal-stack"></dd>
+          <dt>Goals</dt>
+          <dd id="modal-goals"></dd>
+          <dt>Outcomes</dt>
+          <dd id="modal-outcomes"></dd>
+        </dl>
+        <div class="modal-screenshots" id="modal-screenshots"></div>
+        <a href="#" class="btn btn-primary modal-cta" id="modal-cta" target="_blank" rel="noopener noreferrer">Visit site</a>
+      </div>
+    </div>
+  </div>
 
   <footer class="footer">
     <div class="container">
@@ -271,6 +407,6 @@
     </div>
   </footer>
 
-  <script src="script.js?v=6"></script>
+  <script src="script.js?v=14"></script>
 </body>
 </html>
