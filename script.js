@@ -21,21 +21,39 @@
   }
 
   function generateCrackPaths(ox, oy) {
-    const branches = 8;
+    const branches = 12;
     const paths = [];
     for (let i = 0; i < branches; i++) {
-      const angle = (i / branches) * Math.PI * 2 + (i % 2) * 0.25;
+      const angle = (i / branches) * Math.PI * 2 + (i % 2) * 0.2;
       let x = ox, y = oy;
-      const segs = 4 + (i % 2);
+      const segs = 6 + (i % 3);
       const pts = [x, y];
       for (let s = 0; s < segs; s++) {
-        const len = 12 + (s * 6) + (i % 3) * 3;
-        x += Math.cos(angle + s * 0.35) * len;
-        y += Math.sin(angle + s * 0.35) * len;
+        const len = 18 + (s * 8) + (i % 3) * 4;
+        const jitter = (Math.random() - 0.5) * 0.12;
+        x += Math.cos(angle + s * 0.32 + jitter) * len;
+        y += Math.sin(angle + s * 0.32 + jitter) * len;
         pts.push(x, y);
       }
       const d = pts.reduce((acc, v, idx) => acc + (idx % 2 ? ',' : (idx ? 'L' : 'M')) + v, '');
       paths.push({ d });
+
+      if (segs > 4) {
+        const branchIdx = 2 + (i % 2);
+        const bx = pts[branchIdx * 2];
+        const by = pts[branchIdx * 2 + 1];
+        const bAngle = angle + (i % 2 ? 0.75 : -0.75);
+        let bX = bx, bY = by;
+        const bPts = [bX, bY];
+        for (let b = 0; b < 3; b++) {
+          const bLen = 14 + b * 10;
+          bX += Math.cos(bAngle + b * 0.35) * bLen;
+          bY += Math.sin(bAngle + b * 0.35) * bLen;
+          bPts.push(bX, bY);
+        }
+        const bd = bPts.reduce((acc, v, idx) => acc + (idx % 2 ? ',' : (idx ? 'L' : 'M')) + v, '');
+        paths.push({ d: bd });
+      }
     }
     return paths;
   }
@@ -53,26 +71,39 @@
     }
   }
 
+  function randomPolygon() {
+    const sides = 3 + Math.floor(Math.random() * 2);
+    const points = [];
+    for (let i = 0; i < sides; i++) {
+      const a = (i / sides) * Math.PI * 2 + Math.random() * 0.5;
+      const r = 0.4 + Math.random() * 0.6;
+      points.push(`${50 + Math.cos(a) * r * 50}% ${50 + Math.sin(a) * r * 50}%`);
+    }
+    return `polygon(${points.join(', ')})`;
+  }
+
   function spawnShatter(ox, oy, paths) {
     if (!shatterLayer || !shatterCrack || !shatterShards) return;
     shatterCrack.innerHTML = paths.map(({ d }) =>
       `<path d="${d}" pathLength="100"></path>`
     ).join('');
     shatterShards.innerHTML = '';
-    const shardCount = 12;
+    const shardCount = 44;
     for (let i = 0; i < shardCount; i++) {
       const span = document.createElement('span');
       const angle = Math.random() * Math.PI * 2;
-      const dist = 140 + Math.random() * 180;
-      const size = 10 + Math.random() * 22;
+      const dist = 220 + Math.random() * 420;
+      const size = 12 + Math.random() * 34;
       span.style.width = `${size}px`;
-      span.style.height = `${Math.max(8, size * 0.7)}px`;
+      span.style.height = `${size}px`;
       span.style.left = `${ox}%`;
       span.style.top = `${oy}%`;
+      span.style.clipPath = randomPolygon();
+      span.style.webkitClipPath = span.style.clipPath;
       span.style.setProperty('--dx', `${Math.cos(angle) * dist}px`);
       span.style.setProperty('--dy', `${Math.sin(angle) * dist}px`);
-      span.style.setProperty('--rot', `${Math.random() * 180}deg`);
-      span.style.setProperty('--delay', `${Math.random() * 0.12}s`);
+      span.style.setProperty('--rot', `${Math.random() * 360}deg`);
+      span.style.setProperty('--delay', `${Math.random() * 0.15}s`);
       shatterShards.appendChild(span);
     }
     document.body.classList.remove('glass-shatter-active');
@@ -82,7 +113,7 @@
       document.body.classList.remove('glass-shatter-active');
       shatterShards.innerHTML = '';
       shatterCrack.innerHTML = '';
-    }, 1500);
+    }, 1900);
   }
 
   function triggerCrackAndDismiss(clientX, clientY) {
@@ -100,7 +131,8 @@
     ).join('');
     addParticles(ox, oy);
     spawnShatter(ox, oy, paths);
-    setTimeout(dismissIntro, 750);
+    /* Hide intro quickly so glass pieces are visible on top */
+    setTimeout(dismissIntro, 420);
   }
 
   let introDismissing = false;
